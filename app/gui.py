@@ -192,7 +192,7 @@ class ProductGroup(QGroupBox):
             row_values["width"] = width.text() if width else ''
             row_values['height'] = height.text() if height else ''
             row_values['color'] = color.text() if color else ''
-            row_values['color_type'] = colortype.text() if colortype else ''
+            row_values['colortype'] = colortype.text() if colortype else ''
             row_values['num'] = num.text() if num else ''
             values.append(row_values)
         return {'table': values}
