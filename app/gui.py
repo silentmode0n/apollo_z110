@@ -189,11 +189,11 @@ class ProductGroup(QGroupBox):
             color = self.table.item(row, 2)
             colortype = self.table.item(row, 3)
             num = self.table.item(row, 4)
-            row_values["width"] = width.text() if width else ''
-            row_values['height'] = height.text() if height else ''
+            row_values["width"] = int(width.text()) if width else ''
+            row_values['height'] = int(height.text()) if height else ''
             row_values['color'] = color.text() if color else ''
             row_values['colortype'] = colortype.text() if colortype else ''
-            row_values['num'] = num.text() if num else ''
+            row_values['num'] = int(num.text()) if num else ''
             values.append(row_values)
         return {'table': values}
 
