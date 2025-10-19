@@ -1,4 +1,6 @@
 from icecream import ic
+
+from .model import Model
 from .config import (
     COLOR_TYPES,
     FORM_MAX_WIDHT,
@@ -286,4 +288,7 @@ class MainWindow(QMainWindow):
         # if filepath:
         #     data = self.get_data()
         #     data['filepath_to_save'] = filepath
-        ic(self.get_data())
+        data = self.get_data()
+        ic(data)
+        model = Model(data)
+        ic(model.data)
