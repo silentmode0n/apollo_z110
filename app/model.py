@@ -40,7 +40,7 @@ class Element:
             return False
 
 
-class Counter():
+class Counter:
     """Счетчик для количества идентичных элементов Element"""
     def __init__(self):
         self._map = {}
@@ -52,8 +52,22 @@ class Counter():
             else:
                 self._map[new_element] = num
 
-    def get(self) -> dict[Element, int]:
+    def get_dict(self) -> dict[Element, int]:
         return self._map.copy()
+
+    def get(self) -> list[dict]:
+        list_of_elements = []
+        for element, count in self._map.items():
+            list_of_elements.append({
+                'name': element.name,
+                'size': element.size,
+                'color': element.color,
+                'colortype': element.colortype,
+                'count': count,
+                'unit': element.unit,
+                })
+        return list_of_elements
+
 
 
 class Slat(Element):
@@ -77,56 +91,84 @@ class Lamel(Element):
 
 
 class Fence:
-    def __init__(self, width: int, height: int, color: str, colortype: str, num: int):
+    def __init__(self, width: int, height: int, color: str, colortype: str):
         self.name = FENCE_NAME
         self.width = width
         self.height = height
         self.color = color
         self.colortype = colortype
         self.slat_num = 2 if self.width >= 2500 else 1 if self.width >= 2000 else 0
-        self.num = num
 
     def __repr__(self) -> str:
-          return f'{self.__class__.__name__} <{self.name} {self.width}x{self.height} RAL{self.color} {self.colortype} {self.num}шт>'
+          return f'{self.__class__.__name__} <{self.name} {self.width}x{self.height} RAL{self.color} {self.colortype}>'
 
     def get_lamels(self) -> tuple[Element, int]:
-        num = (self.height // 110) * self.num
+        num = (self.height // 110)
         return (Lamel(self.width - 15, self.color, self.colortype), num)
 
     def get_rails(self) -> tuple[Element, int]:
-        num = self.num
-        return (Rail(self.height, self.color, self.colortype), num)
+        return (Rail(self.height, self.color, self.colortype), 1)
 
     def get_caps(self) -> tuple[Element, int]:
-        num = self.num
-        return (Cap(self.width, self.color, self.colortype), num)
+        return (Cap(self.width, self.color, self.colortype), 1)
 
     def get_slats(self) -> tuple[Element, int]:
-        num = self.slat_num * self.num
-        return (Slat(self.height - 40, self.color, self.colortype), num)
+        return (Slat(self.height - 40, self.color, self.colortype), self.slat_num)
 
 
 class Model:
     """Класс описывающий главную модель"""
 
-    def __init__(self, data: dict):
-        self.data = data
-        self.data['fences'] = [Fence(**fence) for fence in self.data['table']]
-        self.data.update(self._count_elements(self.data['fences']))
+    def __init__(self, raw_table: list[dict]):
+        self.fences = self._create_fences_from_tabel(raw_table)
 
-    def _count_elements(self, fences: list) -> dict:
-        lamels_counter = Counter()
-        rails_counter = Counter()
-        caps_counter = Counter()
-        slats_counter = Counter()
-        for fence in fences:
-            lamels_counter.add(*fence.get_lamels())
-            caps_counter.add(*fence.get_caps())
-            rails_counter.add(*fence.get_rails())
-            slats_counter.add(*fence.get_slats())
-        return {
-            'lamels': lamels_counter.get(),
-            'rails': rails_counter.get(),
-            'caps': caps_counter.get(),
-            'slats': slats_counter.get(),
-        }
+    def _create_fences_from_tabel(self, raw_table: list) -> list[tuple[Fence, int]]:
+        fences = []
+        for row in raw_table:
+            fences.append((
+                Fence(row['width'], row['height'], row['color'], row['colortype']),
+                row['count']
+                ))
+        return fences
+
+    def export_fences(self) -> list[dict]:
+        data = []
+        for fence, count in self.fences:
+            data.append({
+                'name': fence.name,
+                'width': fence.width,
+                'height': fence.height,
+                'color': fence.color,
+                'colortype': fence.colortype,
+                'slat_num': fence.slat_num,
+                'count': count,
+                })
+        return data
+
+    def export_lamels(self) -> list[dict]:
+        counter = Counter()
+        for fence, count in self.fences:
+            element, num = fence.get_lamels()
+            counter.add(element, num * count)
+        return counter.get()
+
+    def export_rails(self) -> list[dict]:
+        counter = Counter()
+        for fence, count in self.fences:
+            element, num = fence.get_rails()
+            counter.add(element, num * count)
+        return counter.get()
+
+    def export_caps(self) -> list[dict]:
+        counter = Counter()
+        for fence, count in self.fences:
+            element, num = fence.get_caps()
+            counter.add(element, num * count)
+        return counter.get()
+
+    def export_slats(self) -> list[dict]:
+        counter = Counter()
+        for fence, count in self.fences:
+            element, num = fence.get_slats()
+            counter.add(element, num * count)
+        return counter.get()

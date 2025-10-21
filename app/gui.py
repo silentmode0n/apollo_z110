@@ -117,7 +117,7 @@ class ProductGroup(QGroupBox):
         self.width_line.textChanged.connect(
             lambda: self.visual_int_validator(self.width_line, 0, WIDTH_MAX_VALUE)
         )
-        self.height_line = QLineEdit(form)
+        self.height_line = QLineEdit(form) #TODO: replace qlineedit to qcombobox
         self.height_line.setValidator(QIntValidator(bottom=0))
         self.height_line.textChanged.connect(
             lambda: self.visual_int_validator(self.height_line, 0, HEIGHT_MAX_VALUE)
@@ -180,10 +180,10 @@ class ProductGroup(QGroupBox):
         row = self.table.rowCount()
         self.table.insertRow(row)
         for c, value in enumerate(values):
-            self.table.setItem(row, c, TableItem(value))
+            self.table.setItem(row, c, TableItem(value)) # TODO: add color validation for value in table
 
-    def get_data(self) -> dict:
-        values = []
+    def get_data(self) -> list:
+        table_rows = []
         for row in range(self.table.rowCount()):
             row_values = {}
             width = self.table.item(row, 0)
@@ -195,9 +195,9 @@ class ProductGroup(QGroupBox):
             row_values['height'] = int(height.text()) if height else ''
             row_values['color'] = color.text() if color else ''
             row_values['colortype'] = colortype.text() if colortype else ''
-            row_values['num'] = int(num.text()) if num else ''
-            values.append(row_values)
-        return {'table': values}
+            row_values['count'] = int(num.text()) if num else ''
+            table_rows.append(row_values)
+        return table_rows
 
     def set_data(self, data: dict): # dict: {products: List["width_height_color_colortype_num"]}
         if 'products' in data:
@@ -218,8 +218,8 @@ class CommentGroup(QGroupBox):
 
         layout.addWidget(self.d_comments)
 
-    def get_data(self) -> dict:
-        return {"comments": self.d_comments.toPlainText()}
+    def get_data(self) -> str:
+        return self.d_comments.toPlainText()
 
     def set_data(self, data: dict):
         if 'comments' in data:
@@ -272,9 +272,9 @@ class MainWindow(QMainWindow):
 
     def get_data(self) -> dict:
         data = {}
-        data.update(self.order_group.get_data())
-        data.update(self.product_group.get_data())
-        data.update(self.comments_group.get_data())
+        data['order_info'] = self.order_group.get_data()
+        data['table'] = self.product_group.get_data()
+        data['comments'] = self.comments_group.get_data()
         return data
 
     def set_data(self, data: dict):
@@ -289,6 +289,10 @@ class MainWindow(QMainWindow):
         #     data = self.get_data()
         #     data['filepath_to_save'] = filepath
         data = self.get_data()
+        model = Model(data['table'])
+        data['fences'] = model.export_fences()
+        data['lamels'] = model.export_lamels()
+        data['rails'] = model.export_rails()
+        data['caps'] = model.export_caps()
+        data['slats'] = model.export_slats()
         ic(data)
-        model = Model(data)
-        ic(model.data)
