@@ -5,13 +5,13 @@ from .config import (
     COLOR_TYPES,
     FORM_MAX_WIDHT,
     FORM_MIN_WIDTH,
+    HEIGHT_VALUES,
     TABLE_HEADERS,
     TABLE_MIN_WIDTH,
     TITLE,
     ICO_FILEPATH,
     HOMEDIR,
     WIDTH_MAX_VALUE,
-    HEIGHT_MAX_VALUE,
 )
 from PySide6.QtWidgets import (
     QMainWindow,
@@ -28,12 +28,15 @@ from PySide6.QtWidgets import (
     QPushButton,
     QFileDialog,
     QTableWidgetItem,
+    QMessageBox,
 )
 from PySide6.QtCore import (
     QDate,
     Qt,
 )
 from PySide6.QtGui import (
+    QBrush,
+    QColor,
     QIntValidator,
     QIcon,
 )
@@ -89,6 +92,25 @@ class TableItem(QTableWidgetItem):
             Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
         )
 
+class TableItemWidth(TableItem):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        default_qbrush = self.foreground()
+        if args[0].isdigit() and int(args[0]) <= WIDTH_MAX_VALUE and int(args[0]) > 0:
+            self.setForeground(default_qbrush)
+        else:
+            self.setForeground(QBrush(QColor(255, 0, 0)))
+
+class TableItemHeight(TableItem):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        default_qbrush = self.foreground()
+        if args[0].isdigit() and args[0] in HEIGHT_VALUES:
+            self.setForeground(default_qbrush)
+        else:
+            self.setForeground(QBrush(QColor(255, 0, 0)))
+
+        
 
 class ProductGroup(QGroupBox):
     def __init__(self):
@@ -103,8 +125,8 @@ class ProductGroup(QGroupBox):
         self.table.setColumnCount(len(TABLE_HEADERS))
         self.table.setHorizontalHeaderLabels(TABLE_HEADERS)
         self.table.cellDoubleClicked.connect(
-            lambda: print("clicked")
-        )  # TODO: add edit and delete functionals
+            self.delete_current_row
+        )  # TODO: add edit functionals
 
         form = QWidget()
         form.setMaximumWidth(FORM_MAX_WIDHT)
@@ -114,31 +136,32 @@ class ProductGroup(QGroupBox):
 
         self.width_line = QLineEdit(form)
         self.width_line.setValidator(QIntValidator(bottom=0))
-        self.width_line.textChanged.connect(
-            lambda: self.visual_int_validator(self.width_line, 0, WIDTH_MAX_VALUE)
-        )
-        self.height_line = QLineEdit(form) #TODO: replace qlineedit to qcombobox
-        self.height_line.setValidator(QIntValidator(bottom=0))
-        self.height_line.textChanged.connect(
-            lambda: self.visual_int_validator(self.height_line, 0, HEIGHT_MAX_VALUE)
-        )
+        # self.width_line.textChanged.connect(
+        #     lambda: self.visual_int_validator(self.width_line, 0, WIDTH_MAX_VALUE)
+        # )
+        self.height_line = QComboBox(form)
+        self.height_line.addItems(HEIGHT_VALUES)
+        self.height_line.setCurrentText(HEIGHT_VALUES[15])
+
         self.color_line = QLineEdit(form)
         self.color_line.setValidator(QIntValidator(bottom=0))
+
         self.colortype_line = QComboBox(form)
         self.colortype_line.addItems(COLOR_TYPES)
+
         self.num_line = QLineEdit(form)
         self.num_line.setValidator(QIntValidator(bottom=0))
-        self.num_line.textChanged.connect(
-            lambda: self.visual_int_validator(self.num_line, 0, 999)
-        )
-        add_button = QPushButton("Добавить")
+        # self.num_line.textChanged.connect(
+        #     lambda: self.visual_int_validator(self.num_line, 0, 999)
+        # )
+        add_button = QPushButton("<-- Добавить")
         add_button.clicked.connect(self.insert_row_from_button)
 
+        form_layout.addRow(TABLE_HEADERS[4], self.num_line)
         form_layout.addRow(TABLE_HEADERS[0], self.width_line)
         form_layout.addRow(TABLE_HEADERS[1], self.height_line)
         form_layout.addRow(TABLE_HEADERS[2], self.color_line)
         form_layout.addRow(TABLE_HEADERS[3], self.colortype_line)
-        form_layout.addRow(TABLE_HEADERS[4], self.num_line)
         form_layout.addRow(add_button)
 
         layout.addWidget(self.table)
@@ -153,7 +176,7 @@ class ProductGroup(QGroupBox):
 
     def get_form_values(self):
         width = self.width_line.text().strip()
-        height = self.height_line.text().strip()
+        height = self.height_line.currentText().strip()
         color = self.color_line.text().strip()
         colortype = self.colortype_line.currentText().strip()
         num = self.num_line.text().strip()
@@ -167,7 +190,7 @@ class ProductGroup(QGroupBox):
 
     def clear_form(self):
         self.width_line.clear()
-        self.height_line.clear()
+        # self.height_line.clear()
         # self.color_line.clear()
         self.num_line.clear()
 
@@ -179,8 +202,25 @@ class ProductGroup(QGroupBox):
     def insert_row(self, values):
         row = self.table.rowCount()
         self.table.insertRow(row)
-        for c, value in enumerate(values):
-            self.table.setItem(row, c, TableItem(value)) # TODO: add color validation for value in table
+        self.table.setItem(row, 0, TableItemWidth(values[0]))
+        self.table.setItem(row, 1, TableItemHeight(values[1]))
+        self.table.setItem(row, 2, TableItem(values[2]))
+        self.table.setItem(row, 3, TableItem(values[3]))
+        self.table.setItem(row, 4, TableItem(values[4]))
+
+    def delete_current_row(self):
+        current_row = self.table.currentRow()
+        if current_row < 0:
+            return QMessageBox.warning(self, 'Внимание','Выберете строку таблицы для удаления')
+        button = QMessageBox.question(
+            self,
+            'Подтверждение',
+            'Удалить текущую запись в таблице?',
+            QMessageBox.StandardButton.Yes |
+            QMessageBox.StandardButton.No
+        )
+        if button == QMessageBox.StandardButton.Yes:
+            self.table.removeRow(current_row)
 
     def get_data(self) -> list:
         table_rows = []
