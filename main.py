@@ -10,7 +10,7 @@ from app.parser import parser
 from app.config import LOG_FILEPATH
 from app.debug import debug_condition
 
-logger.add(LOG_FILEPATH)
+logger.add(LOG_FILEPATH, format="{time} {level} {message}")
 
 if __name__ == "__main__":
     try:

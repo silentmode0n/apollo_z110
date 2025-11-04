@@ -1,8 +1,8 @@
 import os
 
-VERSION = "v-0.0.0"
+VERSION = "v-0.1"
 
-TITLE = f'Ограждение Жалюзи Z110 Аполло    {VERSION}'
+TITLE = 'Жалюзи Z110'
 
 # текущий каталог
 CWD = os.getcwd()
@@ -16,6 +16,12 @@ HOMEDIR = os.path.expanduser('~')
 # файлы
 LOG_FILEPATH = os.path.join(CWD, 'logging.log')
 ICO_FILEPATH = os.path.join(STATIC, 'ico', 'logo.ico')
+LOGO_FILEPATH = os.path.join(STATIC, 'logo', 'apollo_logo.png')
+
+# шрифт для PDF
+FONT_FILEPATH = os.path.join(STATIC, 'fonts', 'JetBrainsMono-Regular.ttf')
+FONT_B_FILEPATH = os.path.join(STATIC, 'fonts', 'JetBrainsMono-Bold.ttf')
+FONT_NAME = 'JetBrainsMono'
 
 # значения для полей формы
 WIDTH_MAX_VALUE = 2750
@@ -24,15 +30,16 @@ HEIGHT_VALUES = [str(count * 110 + 30) for count in range(3, 28)]
 
 # параметры виджетов
 TABLE_HEADERS = ("Ширина", "Высота", "RAL", "Структура", "Кол-во")
+TABLE_MIN_WIDTH = 530
 FORM_MAX_WIDHT = 200
 FORM_MIN_WIDTH = 200
-TABLE_MIN_WIDTH = 530
 
-FENCE_NAME = 'Секция Z110'
-LAMEL_NAME = 'Ламель 124х51'
-RAIL_NAME = 'Шина 60х40'
-CAP_NAME = 'Крышка 60х40'
-SLAT_NAME = 'Планка 40'
+FENCE_TITLE = 'Секции в сборе'
+LAMEL_TITLE = 'Ламели 124х51'
+RAIL_TITLE = 'Стойки 60х40'
+CAP_TITLE = 'Крышки 60х40'
+SLAT_TITLE = 'Планки 40'
+COMMENT_TITLE = 'Примечание'
 
 FENCE_UNITS = 'шт'
 LAMEL_UNITS = 'шт'

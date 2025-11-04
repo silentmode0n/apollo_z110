@@ -1,12 +1,12 @@
 from .config import (
-    CAP_NAME,
+    CAP_TITLE,
     CAP_UNITS,
-    FENCE_NAME,
-    LAMEL_NAME,
+    FENCE_TITLE,
+    LAMEL_TITLE,
     LAMEL_UNITS,
-    RAIL_NAME,
+    RAIL_TITLE,
     RAIL_UNITS,
-    SLAT_NAME,
+    SLAT_TITLE,
     SLAT_UNITS,
     )
 
@@ -60,10 +60,10 @@ class Counter:
         for element, count in self._map.items():
             list_of_elements.append({
                 'name': element.name,
-                'size': element.size,
+                'size': str(element.size),
                 'color': element.color,
                 'colortype': element.colortype,
-                'count': count,
+                'count': str(count),
                 'unit': element.unit,
                 })
         return list_of_elements
@@ -72,27 +72,27 @@ class Counter:
 
 class Slat(Element):
 	def __init__(self, size: int, color: str, colortype: str):
-		super().__init__(name=SLAT_NAME, size=size, color=color, colortype=colortype, unit=SLAT_UNITS)
+		super().__init__(name=SLAT_TITLE, size=size, color=color, colortype=colortype, unit=SLAT_UNITS)
 
 
 class Cap(Element):
 	def __init__(self, size: int, color: str, colortype: str):
-		super().__init__(name=CAP_NAME, size=size, color=color, colortype=colortype, unit=CAP_UNITS)
+		super().__init__(name=CAP_TITLE, size=size, color=color, colortype=colortype, unit=CAP_UNITS)
 
 
 class Rail(Element):
 	def __init__(self, size: int, color: str, colortype: str):
-		super().__init__(name=RAIL_NAME, size=size, color=color, colortype=colortype, unit=RAIL_UNITS)
+		super().__init__(name=RAIL_TITLE, size=size, color=color, colortype=colortype, unit=RAIL_UNITS)
 
 
 class Lamel(Element):
 	def __init__(self, size: int, color: str, colortype: str):
-		super().__init__(name=LAMEL_NAME, size=size, color=color, colortype=colortype, unit=LAMEL_UNITS)
+		super().__init__(name=LAMEL_TITLE, size=size, color=color, colortype=colortype, unit=LAMEL_UNITS)
 
 
 class Fence:
     def __init__(self, width: int, height: int, color: str, colortype: str):
-        self.name = FENCE_NAME
+        self.name = FENCE_TITLE
         self.width = width
         self.height = height
         self.color = color
@@ -136,12 +136,12 @@ class Model:
         for fence, count in self.fences:
             data.append({
                 'name': fence.name,
-                'width': fence.width,
-                'height': fence.height,
+                'width': str(fence.width),
+                'height': str(fence.height),
                 'color': fence.color,
                 'colortype': fence.colortype,
-                'slat_num': fence.slat_num,
-                'count': count,
+                'slat_num': str(fence.slat_num),
+                'count': str(count),
                 })
         return data
 

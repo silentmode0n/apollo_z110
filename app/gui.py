@@ -1,6 +1,11 @@
 from icecream import ic
 
+from .utils import (
+    show_file,
+    write_info_to_log,
+)
 from .model import Model
+from .pdf import PDF
 from .config import (
     COLOR_TYPES,
     FORM_MAX_WIDHT,
@@ -11,6 +16,7 @@ from .config import (
     TITLE,
     ICO_FILEPATH,
     HOMEDIR,
+    VERSION,
     WIDTH_MAX_VALUE,
 )
 from PySide6.QtWidgets import (
@@ -92,6 +98,7 @@ class TableItem(QTableWidgetItem):
             Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
         )
 
+
 class TableItemWidth(TableItem):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -100,6 +107,7 @@ class TableItemWidth(TableItem):
             self.setForeground(default_qbrush)
         else:
             self.setForeground(QBrush(QColor(255, 0, 0)))
+
 
 class TableItemHeight(TableItem):
     def __init__(self, *args, **kwargs):
@@ -110,7 +118,6 @@ class TableItemHeight(TableItem):
         else:
             self.setForeground(QBrush(QColor(255, 0, 0)))
 
-        
 
 class ProductGroup(QGroupBox):
     def __init__(self):
@@ -208,7 +215,7 @@ class ProductGroup(QGroupBox):
         self.table.setItem(row, 3, TableItem(values[3]))
         self.table.setItem(row, 4, TableItem(values[4]))
 
-    def delete_current_row(self):
+    def delete_current_row(self): # TODO: rename buttons Yes | No
         current_row = self.table.currentRow()
         if current_row < 0:
             return QMessageBox.warning(self, 'Внимание','Выберете строку таблицы для удаления')
@@ -283,7 +290,8 @@ class ButtonGroup(QGroupBox):
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setWindowTitle(TITLE)
+        self.debug = False
+        self.setWindowTitle(f'{TITLE}   {VERSION}')
         icon = QIcon(ICO_FILEPATH)
         self.setWindowIcon(icon)
 
@@ -318,21 +326,32 @@ class MainWindow(QMainWindow):
         return data
 
     def set_data(self, data: dict):
+        self.debug = data['debug'] if 'debug' in data else False
         self.order_group.set_data(data)
         self.comments_group.set_data(data)
         self.product_group.set_data(data)
 
     def submit_handler(self):
         """MAIN HANDLER"""
-        # filepath = self.get_save_as_filename()
-        # if filepath:
-        #     data = self.get_data()
-        #     data['filepath_to_save'] = filepath
-        data = self.get_data()
-        model = Model(data['table'])
-        data['fences'] = model.export_fences()
-        data['lamels'] = model.export_lamels()
-        data['rails'] = model.export_rails()
-        data['caps'] = model.export_caps()
-        data['slats'] = model.export_slats()
-        ic(data)
+        filepath = self.get_save_as_filename()
+        if filepath:
+            if not filepath.endswith('.pdf'):
+                filepath += '.pdf'
+            data = self.get_data()
+            model = Model(data['table'])
+            data['fences'] = model.export_fences()
+            data['lamels'] = model.export_lamels()
+            data['rails'] = model.export_rails()
+            data['caps'] = model.export_caps()
+            data['slats'] = model.export_slats()
+
+            if self.debug:
+                ic(data)
+
+            pdf = PDF(data)
+            pdf.create_page()
+            pdf.save(filepath)
+
+            write_info_to_log(data['order_info'], filepath)
+
+            show_file(filepath)
