@@ -71,33 +71,33 @@ class PDF(FPDF):
         self.image(LOGO_FILEPATH, x=self.l_margin, y=self.t_margin, w=LOGO_SIZE, h=LOGO_SIZE)
         # set font
         self.set_font_size(FONT_TITLE_SIZE)
-        # name plan
-        self.cell(self.epw / 2, LOGO_SIZE, TITLE, border=0, align='C')
+        # print title
+        self.cell(self.epw / 2, LOGO_SIZE, TITLE, border='RB', align='C')
         # set font
         self.set_font_size(FONT_MAIN_SIZE)
         # print order row
         self.cell(HEADER_LABEL_W, ROW_H, 
-                  'Заказ:', border=1, align='L')
+                  'Заказ:', border='RB', align='L')
         self.cell(self.epw / 2 - HEADER_LABEL_W, ROW_H,
-                  self.data['order_info']['order'], border=1, align='L')
+                  self.data['order_info']['order'], border='B', align='L')
         # print date row
         self.ln()
         self.cell(self.epw / 2, ROW_H) #blank
         self.cell(HEADER_LABEL_W, ROW_H, 
-                  'Дата:', border=1, align='L')
+                  'Дата:', border='RB', align='L')
         self.cell(self.epw / 2 - HEADER_LABEL_W, ROW_H,
-                  self.data['order_info']['date'], border=1, align='L')
+                  self.data['order_info']['date'], border='B', align='L')
         self.ln()
-        # customer
+        # customer # TODO: cut line of data.customer
         self.cell(HEADER_LABEL_W, ROW_H, 
-                  'Заказчик:', border=1, align='L')
+                  'Заказчик:', border='RB', align='L')
         self.cell(self.epw / 2 - HEADER_LABEL_W, ROW_H,
-                  self.data['order_info']['customer'], border=1, align='L')
+                  self.data['order_info']['customer'], border='RB', align='L')
         # engeener
         self.cell(HEADER_LABEL_W, ROW_H, 
-                  'Инженер:', border=1, align='L')
+                  'Инженер:', border='RB', align='L')
         self.cell(self.epw / 2 - HEADER_LABEL_W, ROW_H,
-                  self.data['order_info']['engineer'], border=1, align='L')
+                  self.data['order_info']['engineer'], border='B', align='L')
         self.ln()
         self.ln()
 
