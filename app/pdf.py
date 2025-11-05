@@ -184,10 +184,9 @@ class PDF(FPDF):
 
     def render_comments(self, width, align):
         self.draw_table_name(f'{COMMENT_TITLE}:', width, align)
-        align = 'L' if align == 'LEFT' else 'R'
-        if align == 'R':
+        if align == 'RIGHT':
             self.ln(self.epw - width)
-        self.multi_cell(width, None, self.data['comments'], align=align)
+        self.multi_cell(width, None, self.data['comments'], align='L')
         self.ln()
 
     def create_page(self):
