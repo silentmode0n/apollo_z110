@@ -149,7 +149,7 @@ class App(ttk.Window):
         # button_add.bind('<Return>', self.button_add_handler)
 
         table_frame.pack(side='left', fill='both', expand=True, anchor='n')
-        form_frame.pack(side='left', fill='none', expand=None, anchor='n')
+        form_frame.pack(side='left', fill='none', expand=False, anchor='n')
 
         return product_group
 
