@@ -25,7 +25,7 @@ FONT_NAME = 'JetBrainsMono'
 
 # значения для полей формы
 WIDTH_MAX_VALUE = 2750
-COLOR_TYPES = ('шагрень', 'матовый', 'муар', 'глянец')
+COLOR_TYPES = ['шагрень', 'матовый', 'муар', 'глянец']
 HEIGHT_VALUES = [str(count * 110 + 30) for count in range(3, 28)]
 
 # параметры виджетов
