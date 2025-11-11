@@ -24,15 +24,12 @@ FONT_B_FILEPATH = os.path.join(STATIC, 'fonts', 'JetBrainsMono-Bold.ttf')
 FONT_NAME = 'JetBrainsMono'
 
 # значения для полей формы
-WIDTH_MAX_VALUE = 2750
+WIDTH_MAX_VALUE = 3000
 COLOR_TYPES = ['шагрень', 'матовый', 'муар', 'глянец']
 HEIGHT_VALUES = [str(count * 110 + 30) for count in range(3, 28)]
 
 # параметры виджетов
 TABLE_HEADERS = ("Ширина", "Высота", "RAL", "Структура", "Кол-во")
-TABLE_MIN_WIDTH = 530
-FORM_MAX_WIDHT = 200
-FORM_MIN_WIDTH = 200
 
 FENCE_TITLE = 'Секции в сборе'
 LAMEL_TITLE = 'Ламели 124х51'
