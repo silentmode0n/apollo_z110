@@ -23,6 +23,17 @@ FONT_FILEPATH = os.path.join(STATIC, 'fonts', 'JetBrainsMono-Regular.ttf')
 FONT_B_FILEPATH = os.path.join(STATIC, 'fonts', 'JetBrainsMono-Bold.ttf')
 FONT_NAME = 'JetBrainsMono'
 
+FILETYPES_MAP = {
+    'pdf': {
+        'filetypes': (('Document PDF', '*.pdf'), ),
+        'defaultextension': '.pdf'
+    },
+    'json': {
+        'filetypes': (('JSON file', '*.json'), ),
+        'defaultextension': '.json'
+    }
+}
+
 # значения для полей формы
 WIDTH_MAX_VALUE = 3000
 COLOR_TYPES = ['шагрень', 'матовый', 'муар', 'глянец']

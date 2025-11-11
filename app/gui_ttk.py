@@ -1,3 +1,5 @@
+import json
+
 from icecream import ic
 
 from .utils import (
@@ -5,6 +7,15 @@ from .utils import (
     write_info_to_log,
     validate_value,
 )
+
+import ttkbootstrap as ttk
+from ttkbootstrap.tableview import Tableview
+from ttkbootstrap.validation import (
+    add_numeric_validation,
+    add_option_validation,
+    add_range_validation,
+    )
+from tkinter import filedialog
 
 from .model import Model
 from .pdf import PDF
@@ -16,16 +27,8 @@ from .config import (
     TITLE,
     VERSION,
     WIDTH_MAX_VALUE,
+    FILETYPES_MAP,
     )
-
-import ttkbootstrap as ttk
-from ttkbootstrap.tableview import Tableview
-from ttkbootstrap.validation import (
-    add_numeric_validation,
-    add_option_validation,
-    add_range_validation,
-    )
-from tkinter import filedialog
 
 
 class ProductGroup(ttk.Labelframe):
@@ -117,13 +120,22 @@ class ProductGroup(ttk.Labelframe):
         self.table.insert_row(values=values)
 
     def set_data(self, data):
-        for product in data.get('products', ''):
-            self.add_row_to_table(product.split('_'))
+        self.clear_data()
+        if data:
+            for product in data.get('products', ''):
+                self.add_row_to_table(product.split('_'))
+
+    def set_data_form_json(self, data):
+        self.clear_data()
+        if data:
+            for row in data.get('table', ''):
+                self.add_row_to_table(
+                    [row['width'], row['height'], row['color'], row['colortype'], row['count']]
+                )
 
     def get_data(self):
         table_data = []
-        rows = self.table.get_rows()
-        for row in rows:
+        for row in self.table.get_rows():
             table_row = {}
             table_row['width'] = int(row.values[0]) if row.values[0].isdigit() else ''
             table_row['height'] = int(row.values[1]) if row.values[1].isdigit() else ''
@@ -132,6 +144,9 @@ class ProductGroup(ttk.Labelframe):
             table_row['count'] = int(row.values[4]) if row.values[4].isdigit() else ''
             table_data.append(table_row)
         return table_data
+
+    def clear_data(self):
+        self.table.delete_rows()
 
 
 class CommentsGroup(ttk.Labelframe):
@@ -145,11 +160,15 @@ class CommentsGroup(ttk.Labelframe):
         self.comments.pack(side='top', fill='x', expand=True, padx=5, pady=5, anchor='n')
 
     def set_data(self, data):
-        self.comments.insert('1.0', data.get('comments', ''))
-
+        self.clear_data()
+        if data:
+            self.comments.insert('1.0', data.get('comments', ''))
 
     def get_data(self):
         return self.comments.get('1.0', 'end')
+
+    def clear_data(self):
+        self.comments.delete('1.0', 'end')
 
 
 class OrderGroup(ttk.Labelframe):
@@ -201,9 +220,11 @@ class OrderGroup(ttk.Labelframe):
         order_group_row2.pack(side='top', fill='x', expand=True, pady=5, anchor='e')
 
     def set_data(self, data):
-        self.order_entry.insert(0, data.get('order', ''))
-        self.customer_entry.insert(0, data.get('customer', ''))
-        self.engineer_entry.insert(0, data.get('engineer', ''))
+        self.clear_data()
+        if data:
+            self.order_entry.insert(0, data.get('order', ''))
+            self.customer_entry.insert(0, data.get('customer', ''))
+            self.engineer_entry.insert(0, data.get('engineer', ''))
 
     def get_data(self):
         return {
@@ -212,6 +233,43 @@ class OrderGroup(ttk.Labelframe):
             'engineer': self.engineer_entry.get(),
             'date': self.date_entry.get(),
         }
+
+    def clear_data(self):
+        self.order_entry.delete(0, 'end')
+        self.customer_entry.delete(0, 'end')
+        self.engineer_entry.delete(0, 'end')
+        self.date_entry.delete(0, 'end')
+
+
+class ButtonGroup(ttk.Frame):
+
+    def __init__(self, submit_handler, save_to_handler, load_from_handler, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.submit_handler = submit_handler
+        self.save_to_handler = save_to_handler
+        self.load_from_handler = load_from_handler
+        self.create_widgets()
+
+    def create_widgets(self):
+        button_submit = ttk.Button(
+            self,
+            text='Бланк',
+            bootstyle='primary',
+            command=self.submit_handler)
+        button_save_to_json = ttk.Button(
+            self,
+            text='Сохранить в файл',
+            bootstyle='primary-outline',
+            command=self.save_to_handler)
+        button_load_from_json = ttk.Button(
+            self,
+            text='Загрузить из файла',
+            bootstyle='primary-outline',
+            command=self.load_from_handler)
+
+        button_submit.pack(side='left', anchor='w')
+        button_load_from_json.pack(side='right', anchor='w')
+        button_save_to_json.pack(side='right', anchor='w', padx=5)
 
 
 class App(ttk.Window):
@@ -227,23 +285,17 @@ class App(ttk.Window):
         self.product_group.pack(side='top', fill='both', expand=True, padx=5, pady=5, anchor='n')
         self.comments_group = CommentsGroup(text='Примечание')
         self.comments_group.pack(side='top', fill='x', expand=False, padx=5, pady=5, anchor='s')
-        self.button_group = self.get_button_group()
+        self.button_group = ButtonGroup(
+            submit_handler=self.submit_handler, 
+            save_to_handler=self.save_to_json_handler,
+            load_from_handler=self.load_from_json_handler,
+            )
         self.button_group.pack(side='top', fill='x', expand=False, padx=5, pady=5, anchor='s')
 
         self.place_window_center()
 
-    def get_button_group(self):
-        button_group = ttk.Frame(self)
-        button_submit = ttk.Button(
-            button_group,
-            text='Бланк',
-            bootstyle='primary',
-            command=lambda: self.submit_handler())
-        button_submit.pack(side='left', anchor='w')
-
-        return button_group
-
-    def run(self, condition=None):
+    def run(self, condition=None, debug=False):
+        self.debug = debug
         self.create_widgets()
         if condition:
             self.set_data(condition)
@@ -257,17 +309,19 @@ class App(ttk.Window):
         return data
 
     def set_data(self, data):
-        self.debug = data.get('debug', False)
         self.order_group.set_data(data)
         self.product_group.set_data(data)
         self.comments_group.set_data(data)
+
+    def set_data_form_json(self, data):
+        self.order_group.set_data(data.get('order_info'))
+        self.comments_group.set_data(data)
+        self.product_group.set_data_form_json(data)
 
     def submit_handler(self):
         """MAIN HANDLER"""
         filepath = self.ask_saveas_filename(self.get_default_filename())
         if filepath:
-            # if not filepath.endswith('.pdf'):
-            #     filepath += '.pdf'
             data = self.get_data()
             model = Model(data['table'])
             data['fences'] = model.export_fences()
@@ -287,18 +341,42 @@ class App(ttk.Window):
 
             show_file(filepath)
 
-    def ask_saveas_filename(self, initial_name='result'):
+    def save_to_json_handler(self):
+        filepath = self.ask_saveas_filename(self.get_default_filename(), filetype='json')
+        if filepath:
+            data = self.get_data()
+            with open(filepath, 'w', encoding='utf-8') as file:
+                json.dump(data, file)
+
+    def load_from_json_handler(self):
+        filepath = self.ask_open_filename()
+        if filepath:
+            with open(filepath, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+                self.set_data_form_json(data)
+
+    def ask_saveas_filename(self, initial_name='result', filetype='pdf'):
         """ return file name """
-        file_types = (('Document PDF', '*.pdf'), )
-        filepath = filedialog.asksaveasfilename(title='Сохранить как',
-                                                   filetypes=file_types,
-                                                   initialdir=HOMEDIR,
-                                                   initialfile=initial_name,
-                                                   defaultextension='.pdf')
+        filepath = filedialog.asksaveasfilename(
+            title='Сохранить как',
+            filetypes=FILETYPES_MAP[filetype]['filetypes'],
+            initialdir=HOMEDIR,
+            initialfile=initial_name,
+            defaultextension=FILETYPES_MAP[filetype]['defaultextension']
+        )
+        return filepath
+
+    def ask_open_filename(self):
+        filepath = filedialog.askopenfilename(
+            title='Загрузить',
+            filetypes=FILETYPES_MAP['json']['filetypes'],
+            initialdir=HOMEDIR,
+            defaultextension=FILETYPES_MAP['json']['defaultextension'],
+        )
         return filepath
 
     def get_default_filename(self):
         order_info = self.order_group.get_data()
         order = order_info.get('order', 'XXX')
         customer = order_info.get('customer', 'XXXXX')
-        return f'{order}-{customer}.pdf'
+        return f'{order}-{customer}'

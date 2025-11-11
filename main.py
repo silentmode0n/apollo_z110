@@ -21,7 +21,9 @@ if __name__ == "__main__":
             for (key, value) in vars(args).items()
             if value is not None
         }
+        debug = False
         if args.debug:
+            debug = True
             debug_condition.update(condition)
             condition = debug_condition
             print()
@@ -29,7 +31,7 @@ if __name__ == "__main__":
             print()
             ic(condition)
         app = App()
-        app.run(condition)
+        app.run(condition, debug)
     except Exception as e:
         logger.critical(f"Критическое исключение!: {e}", exc_info=True)
         ic(traceback.format_exc())
