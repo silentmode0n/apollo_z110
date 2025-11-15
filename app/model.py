@@ -1,14 +1,20 @@
+from loguru import logger
+
 from .config import (
-    CAP_TITLE,
-    CAP_UNITS,
-    FENCE_TITLE,
     LAMEL_TITLE,
-    LAMEL_UNITS,
     RAIL_TITLE,
-    RAIL_UNITS,
+    CAP_TITLE,
     SLAT_TITLE,
-    SLAT_UNITS,
+    NAIL_TTILE,
+    FENCE_TITLE,
     )
+
+
+FENCE_UNITS = 'шт'
+LAMEL_UNITS = 'шт'
+RAIL_UNITS = 'пара'
+CAP_UNITS = 'шт'
+SLAT_UNITS = 'шт'
 
 
 class Element:
@@ -89,6 +95,10 @@ class Lamel(Element):
 	def __init__(self, size, color, colortype):
 		super().__init__(name=LAMEL_TITLE, size=size, color=color, colortype=colortype, unit=LAMEL_UNITS)
 
+class Nail(Element):
+    def __init__(self, color, colortype):
+        super().__init__(name=NAIL_TTILE, size='3,2х6', color=color, colortype=colortype, unit=LAMEL_UNITS)
+
 
 class Fence:
     def __init__(self, width, height, color, colortype):
@@ -97,14 +107,15 @@ class Fence:
         self.height = height
         self.color = color
         self.colortype = colortype
+        self.lamel_num = height // 110
         self.slat_num = 2 if self.width >= 2500 else 1 if self.width >= 2000 else 0
+        self.nail_num = round((self.lamel_num * (2 + self.slat_num) + 2) * 1.1)
 
     def __repr__(self):
           return f'{self.__class__.__name__} <{self.name} {self.width}x{self.height} RAL{self.color} {self.colortype}>'
 
     def get_lamels(self):
-        num = (self.height // 110)
-        return (Lamel(self.width - 15, self.color, self.colortype), num)
+        return (Lamel(self.width - 15, self.color, self.colortype), self.lamel_num)
 
     def get_rails(self):
         return (Rail(self.height, self.color, self.colortype), 1)
@@ -115,6 +126,9 @@ class Fence:
     def get_slats(self):
         return (Slat(self.height - 40, self.color, self.colortype), self.slat_num)
 
+    def get_nails(self):
+        return (Nail(self.color, self.colortype), self.nail_num)
+
 
 class Model:
     """Класс описывающий главную модель"""
@@ -124,11 +138,16 @@ class Model:
 
     def _create_fences_from_tabel(self, raw_table):
         fences = []
-        for row in raw_table:
-            fences.append((
-                Fence(row['width'], row['height'], row['color'], row['colortype']),
-                row['count']
-                ))
+        try:
+            for row in raw_table:
+                fences.append((
+                    Fence(int(row['width']), int(row['height']), row['color'], row['colortype']),
+                    int(row['count'])
+                    ))
+        except ValueError as e:
+            logger.critical(e)
+            raise e
+            
         return fences
 
     def export_fences(self):
@@ -170,5 +189,12 @@ class Model:
         counter = Counter()
         for fence, count in self.fences:
             element, num = fence.get_slats()
+            counter.add(element, num * count)
+        return counter.get()
+
+    def export_nails(self):
+        counter = Counter()
+        for fence, count in self.fences:
+            element, num = fence.get_nails()
             counter.add(element, num * count)
         return counter.get()

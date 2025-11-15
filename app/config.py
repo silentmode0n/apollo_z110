@@ -1,6 +1,6 @@
 import os
 
-VERSION = "v-0.1"
+VERSION = "v-1.0"
 
 TITLE = 'Жалюзи Z110'
 
@@ -47,10 +47,5 @@ LAMEL_TITLE = 'Ламели 124х51'
 RAIL_TITLE = 'Стойки 60х40'
 CAP_TITLE = 'Крышки 60х40'
 SLAT_TITLE = 'Планки 40'
+NAIL_TTILE = 'Крепеж'
 COMMENT_TITLE = 'Примечание'
-
-FENCE_UNITS = 'шт'
-LAMEL_UNITS = 'шт'
-RAIL_UNITS = 'пара'
-CAP_UNITS = 'шт'
-SLAT_UNITS = 'шт'

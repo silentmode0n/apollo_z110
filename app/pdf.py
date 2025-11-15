@@ -1,11 +1,11 @@
 from fpdf import (
     FPDF,
-    FontFace,
     )
 from .config import (
     CAP_TITLE,
     COMMENT_TITLE,
     FENCE_TITLE,
+    NAIL_TTILE,
     FONT_FILEPATH,
     FONT_B_FILEPATH,
     FONT_NAME,
@@ -23,7 +23,7 @@ RED = (250, 0, 0)
 GREY = (188, 188, 188)
 WHITE = (255, 255, 255)
 
-FONT_MAIN_SIZE = 10
+FONT_MAIN_SIZE = 9
 FONT_TITLE_SIZE = 16
 ROW_H = 6
 LOGO_SIZE = ROW_H * 2
@@ -103,7 +103,6 @@ class PDF(FPDF):
 
     def draw_table(self, headings: list, rows: list, width: int, col_widths: tuple, align: str):
         self.set_font_size(FONT_MAIN_SIZE)
-        # headings_style = FontFace(fill_color=GREY)
         table_data = [headings,] + rows
 
         with self.table(
@@ -127,66 +126,82 @@ class PDF(FPDF):
         self.set_font(style='')
 
     def render_fences(self, width, align):
-        headings = ['Размер', 'Цвет', 'Секций', 'Планок по']
+        headings = [FENCE_TITLE, 'Цвет', 'Шт', 'Планок по']
         rows = [(
             fence['width'] + 'x' + fence['height'], 
             fence['color'] + ' ' + fence['colortype'], 
             fence['count'],
             fence['slat_num']
             ) for fence in self.data['fences']]
-        self.draw_table_name(f'{FENCE_TITLE}:', width, 'LEFT')
-        self.draw_table(headings, rows, int(width), (1, 1.3, 0.8, 0.9), align)
+        # self.draw_table_name(f'{FENCE_TITLE}:', width, 'LEFT')
+        self.draw_table(headings, rows, int(width), (1.5, 1.1, 0.5, 0.9), align)
         self.ln()
 
     def render_lamels(self, width, align):
-        headings = ['Размер', 'Цвет', 'шт']
+        headings = [LAMEL_TITLE, 'Цвет', 'шт']
         rows = [(
             lamel['size'], 
             lamel['color'] + ' ' + lamel['colortype'], 
             lamel['count']
             ) for lamel in self.data['lamels']]
-        self.draw_table_name(f'{LAMEL_TITLE}:', width, align)
-        self.draw_table(headings, rows, int(width), (1, 1, 0.5), align)
+        # self.draw_table_name(f'{LAMEL_TITLE}:', width, align)
+        self.draw_table(headings, rows, int(width), (1.3, 1.25, 0.45), align)
         self.ln()
 
     def render_rails(self, width, align):
-        headings = ['Размер', 'Цвет', 'пара']
+        headings = [RAIL_TITLE, 'Цвет', 'пара']
         rows = [(
             rail['size'], 
             rail['color'] + ' ' + rail['colortype'], 
             rail['count']
             ) for rail in self.data['rails']]
-        self.draw_table_name(f'{RAIL_TITLE}:', width, align)
-        self.draw_table(headings, rows, int(width), (1, 1, 0.5), align)
+        # self.draw_table_name(f'{RAIL_TITLE}:', width, align)
+        self.draw_table(headings, rows, int(width), (1.3, 1.25, 0.45), align)
         self.ln()
 
     def render_caps(self, width, align):
-        headings = ['Размер', 'Цвет', 'шт']
+        headings = [CAP_TITLE, 'Цвет', 'шт']
         rows = [(
             cap['size'], 
             cap['color'] + ' ' + cap['colortype'], 
             cap['count']
             ) for cap in self.data['caps']]
-        self.draw_table_name(f'{CAP_TITLE}:', width, align)
-        self.draw_table(headings, rows, int(width), (1, 1, 0.5), align)
+        # self.draw_table_name(f'{CAP_TITLE}:', width, align)
+        self.draw_table(headings, rows, int(width), (1.3, 1.25, 0.45), align)
         self.ln()
 
     def render_slats(self, width, align):
-        headings = ['Размер', 'Цвет', 'шт']
+        headings = [SLAT_TITLE, 'Цвет', 'шт']
         rows = [(
             slat['size'], 
             slat['color'] + ' ' + slat['colortype'], 
             slat['count']
             ) for slat in self.data['slats']]
-        self.draw_table_name(f'{SLAT_TITLE}:', width, align)
-        self.draw_table(headings, rows, int(width), (1, 1, 0.5), align)
+        # self.draw_table_name(f'{SLAT_TITLE}:', width, align)
+        self.draw_table(headings, rows, int(width), (1.3, 1.25, 0.45), align)
+        self.ln()
+
+    def render_nails(self, width, align):
+        headings = [NAIL_TTILE, 'Цвет', 'шт']
+        rows = [(
+            nail['size'], 
+            nail['color'] + ' ' + nail['colortype'], 
+            nail['count']
+            ) for nail in self.data['nails']]
+        # self.draw_table_name(f'{NAIL_TTILE}:', width, align)
+        self.draw_table(headings, rows, int(width), (1.3, 1.25, 0.45), align)
         self.ln()
 
     def render_comments(self, width, align):
-        self.draw_table_name(f'{COMMENT_TITLE}:', width, align)
-        if align == 'RIGHT':
-            self.ln(self.epw - width)
-        self.multi_cell(width, None, self.data['comments'], align='L')
+        headings = [COMMENT_TITLE,]
+        rows = [(self.data['comments'],),]
+        # self.draw_table_name(f'{COMMENT_TITLE}:', width, align)
+
+        self.draw_table(headings, rows, int(width), (1,), align)
+
+        # if align == 'RIGHT':
+        #     self.ln(self.epw - width)
+        # self.multi_cell(width, None, self.data['comments'], align='L')
         self.ln()
 
     def create_page(self):
@@ -200,4 +215,5 @@ class PDF(FPDF):
         self.render_rails(self.epw / 2 - 20, 'RIGHT')
         self.render_caps(self.epw / 2 - 20, 'RIGHT')
         self.render_slats(self.epw / 2 - 20, 'RIGHT')
+        self.render_nails(self.epw / 2 - 20, 'RIGHT')
 

@@ -24,9 +24,3 @@ def write_info_to_log(order_info, filepath):
             filepath,
             )
         )
-
-def validate_value(value, func):
-    if func(value):
-        return True
-    else:
-        return False
