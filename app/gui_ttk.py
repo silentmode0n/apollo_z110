@@ -31,6 +31,8 @@ from .config import (
     VERSION,
     WIDTH_MAX_VALUE,
     FILETYPES_MAP,
+    LABEL_FRAME_THEME,
+    WINDOW_THEME,
     )
 
 
@@ -115,12 +117,10 @@ class EditTableRowModal(ttk.Toplevel):
         self.destroy()
 
 
-
-
 class ProductGroup(ttk.Labelframe):
 
-    def __init__(self,master, text, bootstyle='dark'):
-        super().__init__(master=master, text=text, bootstyle=bootstyle)
+    def __init__(self,master, text):
+        super().__init__(master=master, text=text, bootstyle=LABEL_FRAME_THEME)
         self.create_widgets()
 
     def create_widgets(self):
@@ -128,7 +128,11 @@ class ProductGroup(ttk.Labelframe):
         form_frame = ttk.Frame(self)
 
         self.table = self.create_table(table_frame, self.table_handler)
-        self.table.pack(side='left', fill='both', expand=True, padx=5, pady=5, anchor='n')
+        self.table.pack(side='top', fill='both', expand=True, padx=5, pady=5, anchor='n')
+
+        ttk.Label(table_frame, text='* Двойной клик по строке для редактироания', bootstyle='secondary').pack(
+            side='top', fill='x', expand=False, padx=5, pady=5, anchor='s'
+            )
 
         number_label = ttk.Label(form_frame, text=NUMBER_LABEL, width=10)
         self.number_entry = ttk.Entry(form_frame, width=15)
@@ -233,14 +237,8 @@ class ProductGroup(ttk.Labelframe):
     def table_handler(self, event):
         tablerow = self.get_selected_tablerow()
         if tablerow:
-            print(tablerow.values)
             dialog = EditTableRowModal('Редактировать данные', tablerow)
             self.master.wait_window(dialog)
-                # values = tablerow.values
-                # values[0] = '3000'
-                # tablerow.values = values
-                # tablerow.refresh()
-
 
     def get_selected_tablerow(self):
         selected = self.table.view.selection()
@@ -256,8 +254,8 @@ class ProductGroup(ttk.Labelframe):
 
 class CommentsGroup(ttk.Labelframe):
 
-    def __init__(self, master, text, bootstyle='dark'):
-        super().__init__(master=master, text=text, bootstyle=bootstyle)
+    def __init__(self, master, text):
+        super().__init__(master=master, text=text, bootstyle=LABEL_FRAME_THEME)
         self.create_widgets()
 
     def create_widgets(self):
@@ -278,8 +276,8 @@ class CommentsGroup(ttk.Labelframe):
 
 class OrderGroup(ttk.Labelframe):
 
-    def __init__(self, master, text, bootstyle='dark'):
-        super().__init__(master=master, text=text, bootstyle=bootstyle)
+    def __init__(self, master, text):
+        super().__init__(master=master, text=text, bootstyle=LABEL_FRAME_THEME)
         self.create_widgets()
 
     def create_widgets(self):
@@ -380,7 +378,7 @@ class ButtonGroup(ttk.Frame):
 class App(ttk.Window):
 
     def __init__(self):
-        super().__init__(title=f'{TITLE}   {VERSION}', themename='cosmo')
+        super().__init__(title=f'{TITLE}   {VERSION}', themename=WINDOW_THEME)
         self.debug = False
 
     def create_widgets(self):
@@ -398,6 +396,7 @@ class App(ttk.Window):
             )
         self.button_group.pack(side='top', fill='x', expand=False, padx=5, pady=5, anchor='s')
 
+        self.resizable(width=False, height=True)
         self.place_window_center()
 
     def run(self, condition=None, debug=False):

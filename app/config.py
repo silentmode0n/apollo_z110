@@ -34,6 +34,9 @@ FILETYPES_MAP = {
     }
 }
 
+WINDOW_THEME = 'cosmo'
+LABEL_FRAME_THEME = 'dark'
+
 # значения для полей формы
 WIDTH_MAX_VALUE = 3000
 COLOR_TYPES = ['шагрень', 'матовый', 'муар', 'глянец']
