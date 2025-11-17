@@ -89,7 +89,7 @@ class PDF(FPDF):
         self.cell(self.epw / 2 - HEADER_LABEL_W, ROW_H,
                   self.data['order_info']['date'], border='B', align='L')
         self.ln()
-        # customer # TODO: cut line of data.customer
+        # customer
         self.cell(HEADER_LABEL_W, ROW_H, 
                   'Заказчик:', border='RB', align='L')
         self.cell(self.epw / 2 - HEADER_LABEL_W, 
