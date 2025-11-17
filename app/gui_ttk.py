@@ -146,14 +146,14 @@ class ProductGroup(ttk.Labelframe):
         self.colortype_entry = ttk.Combobox(form_frame, width=12, values=COLOR_TYPES)
         button_add = ttk.Button(form_frame, text='Добавить', command=self.button_add_handler)
 
-        number_label.grid(row=0, column=0, padx=5, pady=5, sticky='w')
-        self.number_entry.grid(row=0, column=1, padx=5, pady=5, sticky='nswe')
-        width_label.grid(row=1, column=0, padx=5, pady=5, sticky='w')
-        self.width_entry.grid(row=1, column=1, padx=5, pady=5, sticky='nswe')
-        height_label.grid(row=2, column=0, padx=5, pady=5, sticky='w')
-        self.height_entry.grid(row=2, column=1, padx=5, pady=5, sticky='nswe')
-        color_label.grid(row=3, column=0, padx=5, pady=5, sticky='w')
-        self.color_entry.grid(row=3, column=1, padx=5, pady=5, sticky='nswe')
+        width_label.grid(row=0, column=0, padx=5, pady=5, sticky='w')
+        self.width_entry.grid(row=0, column=1, padx=5, pady=5, sticky='nswe')
+        height_label.grid(row=1, column=0, padx=5, pady=0, sticky='w')
+        self.height_entry.grid(row=1, column=1, padx=5, pady=0, sticky='nswe')
+        number_label.grid(row=2, column=0, padx=5, pady=5, sticky='w')
+        self.number_entry.grid(row=2, column=1, padx=5, pady=5, sticky='nswe')
+        color_label.grid(row=3, column=0, padx=5, pady=0, sticky='w')
+        self.color_entry.grid(row=3, column=1, padx=5, pady=0, sticky='nswe')
         colortype_label.grid(row=4, column=0, padx=5, pady=5, sticky='w')
         self.colortype_entry.grid(row=4, column=1, padx=5, pady=5, sticky='nswe')
         button_add.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
@@ -281,46 +281,52 @@ class OrderGroup(ttk.Labelframe):
         self.create_widgets()
 
     def create_widgets(self):
-        order_group_row1 = ttk.Frame(self)
-        order_group_row2 = ttk.Frame(self)
+        order_group_col1 = ttk.Frame(self)
+        order_group_col1.columnconfigure(1, weight=1)
+        order_group_col2 = ttk.Frame(self)
 
         order_label = ttk.Label(
-            order_group_row1,
+            order_group_col2,
             text='Заказ №:',
             width=10,
             )
         customer_label = ttk.Label(
-            order_group_row1,
+            order_group_col1,
             text='Заказчик:',
             width=10,
             )
         date_label = ttk.Label(
-            order_group_row2,
+            order_group_col2,
             text='Дата:',
             width=10,
             )
         engineer_label = ttk.Label(
-            order_group_row2,
+            order_group_col1,
             text='Инженер:',
             width=10,
             )
 
-        self.customer_entry = ttk.Entry(order_group_row1)
-        self.order_entry = ttk.Entry(order_group_row1, width=15)
-        self.engineer_entry = ttk.Entry(order_group_row2)
-        self.date_entry = ttk.Entry(order_group_row2, width=15) # TODO: replace to date_entry
+        self.customer_entry = ttk.Entry(order_group_col1, width=15)
+        self.order_entry = ttk.Entry(order_group_col2, width=15)
+        self.engineer_entry = ttk.Entry(order_group_col1)
+        self.date_entry = ttk.DateEntry(
+            order_group_col2, 
+            firstweekday=0, 
+            popup_title='Календарь',
+            width=10,
+            )
 
-        customer_label.pack(side='left', fill='y', expand=False,padx=5, anchor='n')
-        self.customer_entry.pack(side='left', fill='x', expand=True,padx=5, anchor='n')
-        order_label.pack(side='left', fill='y', expand=False,padx=5, anchor='n')
-        self.order_entry.pack(side='left', fill='x', expand=False,padx=5, anchor='n')
-        engineer_label.pack(side='left', fill='y', expand=False,padx=5, anchor='n')
-        self.engineer_entry.pack(side='left', fill='x', expand=True,padx=5, anchor='n')
-        date_label.pack(side='left', fill='y', expand=False,padx=5, anchor='n')
-        self.date_entry.pack(side='left', fill='x', expand=False,padx=5, anchor='n')
+        customer_label.grid(row=0, column=0, padx=5, pady=5, sticky='w')
+        self.customer_entry.grid(row=0, column=1, padx=5, pady=5, sticky='nsew')
+        engineer_label.grid(row=1, column=0, padx=5, pady=0, sticky='w')
+        self.engineer_entry.grid(row=1, column=1, padx=5, pady=0, sticky='nsew')
+        order_label.grid(row=0, column=0, padx=5, pady=5, sticky='e')
+        self.order_entry.grid(row=0, column=1, padx=5, pady=5, sticky='e')
+        date_label.grid(row=1, column=0, padx=5, pady=0, sticky='e')
+        self.date_entry.grid(row=1, column=1, padx=5, pady=0, sticky='nsew')
 
-        order_group_row1.pack(side='top', fill='x', expand=True, pady=5, anchor='w')
-        order_group_row2.pack(side='top', fill='x', expand=True, pady=5, anchor='e')
+        order_group_col1.pack(side='left', fill='both', expand=True, pady=5, anchor='n')
+        order_group_col2.pack(side='left', fill='none', expand=False, pady=5, anchor='n')
 
     def set_data(self, data):
         self.clear_data()
@@ -334,14 +340,14 @@ class OrderGroup(ttk.Labelframe):
             'order': self.order_entry.get(),
             'customer': self.customer_entry.get(),
             'engineer': self.engineer_entry.get(),
-            'date': self.date_entry.get(),
+            'date': self.date_entry.entry.get(),
         }
 
     def clear_data(self):
         self.order_entry.delete(0, 'end')
         self.customer_entry.delete(0, 'end')
         self.engineer_entry.delete(0, 'end')
-        self.date_entry.delete(0, 'end')
+        self.date_entry.entry.delete(0, 'end')
 
 
 class ButtonGroup(ttk.Frame):
