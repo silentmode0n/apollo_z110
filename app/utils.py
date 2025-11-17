@@ -24,3 +24,9 @@ def write_info_to_log(order_info, filepath):
             filepath,
             )
         )
+
+def shorten_text(text, size=10):
+    if len(text) <= size:
+        return text
+    else:
+        return text[:size-3] + '...'

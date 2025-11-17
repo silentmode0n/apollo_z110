@@ -16,6 +16,7 @@ from .config import (
     TITLE,
     VERSION,
     )
+from .utils import shorten_text
 
 
 BLACK = (0, 0, 0)
@@ -91,13 +92,17 @@ class PDF(FPDF):
         # customer # TODO: cut line of data.customer
         self.cell(HEADER_LABEL_W, ROW_H, 
                   'Заказчик:', border='RB', align='L')
-        self.cell(self.epw / 2 - HEADER_LABEL_W, ROW_H,
-                  self.data['order_info']['customer'], border='RB', align='L')
+        self.cell(self.epw / 2 - HEADER_LABEL_W, 
+                  ROW_H,
+                  shorten_text(self.data['order_info']['customer'], size=35), 
+                  border='RB', align='L')
         # engeener
         self.cell(HEADER_LABEL_W, ROW_H, 
                   'Инженер:', border='RB', align='L')
-        self.cell(self.epw / 2 - HEADER_LABEL_W, ROW_H,
-                  self.data['order_info']['engineer'], border='B', align='L')
+        self.cell(self.epw / 2 - HEADER_LABEL_W,
+                  ROW_H,
+                  shorten_text(self.data['order_info']['engineer'], size=35), 
+                  border='B', align='L')
         self.ln()
         self.ln()
 

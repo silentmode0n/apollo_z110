@@ -1,6 +1,6 @@
 import os
 
-VERSION = "v-1.1"
+VERSION = "v-1.2"
 
 TITLE = 'Жалюзи Z110'
 
