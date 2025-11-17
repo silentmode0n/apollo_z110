@@ -2,10 +2,11 @@ from loguru import logger
 
 from .config import (
     LAMEL_TITLE,
+    NAIL_SIZE,
     RAIL_TITLE,
     CAP_TITLE,
     SLAT_TITLE,
-    NAIL_TTILE,
+    NAIL_TITLE,
     FENCE_TITLE,
     )
 
@@ -97,7 +98,7 @@ class Lamel(Element):
 
 class Nail(Element):
     def __init__(self, color, colortype):
-        super().__init__(name=NAIL_TTILE, size='3,2х6', color=color, colortype=colortype, unit=LAMEL_UNITS)
+        super().__init__(name=NAIL_TITLE, size=NAIL_SIZE, color=color, colortype=colortype, unit=LAMEL_UNITS)
 
 
 class Fence:

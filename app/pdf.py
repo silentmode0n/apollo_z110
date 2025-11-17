@@ -5,7 +5,7 @@ from .config import (
     CAP_TITLE,
     COMMENT_TITLE,
     FENCE_TITLE,
-    NAIL_TTILE,
+    NAIL_TITLE,
     FONT_FILEPATH,
     FONT_B_FILEPATH,
     FONT_NAME,
@@ -65,7 +65,7 @@ class PDF(FPDF):
         self.set_xy(self.l_margin, 0)
         self.cell(self.epw, self.t_margin, VERSION, border=0, align='R')
 
-    def render_header_table(self):
+    def render_header_table(self): # TODO: edit header table
         # render logo
         self.set_y(self.t_margin)
         self.image(LOGO_FILEPATH, x=self.l_margin, y=self.t_margin, w=LOGO_SIZE, h=LOGO_SIZE)
@@ -182,7 +182,7 @@ class PDF(FPDF):
         self.ln()
 
     def render_nails(self, width, align):
-        headings = [NAIL_TTILE, 'Цвет', 'шт']
+        headings = [NAIL_TITLE, 'Цвет', 'шт']
         rows = [(
             nail['size'], 
             nail['color'] + ' ' + nail['colortype'], 
@@ -204,7 +204,7 @@ class PDF(FPDF):
         # self.multi_cell(width, None, self.data['comments'], align='L')
         self.ln()
 
-    def create_page(self):
+    def create_page(self): # TODO: add blueprints
         self.add_page()
         self.set_font_size(FONT_MAIN_SIZE)
         self.set_y(FONT_MAIN_SIZE * 3)
