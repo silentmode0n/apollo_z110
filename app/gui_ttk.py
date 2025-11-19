@@ -26,6 +26,7 @@ from .config import (
     COLOR_TYPES,
     HEIGHT_VALUES,
     HOMEDIR,
+    ICO_FILEPATH,
     TABLE_HEADERS,
     TITLE,
     VERSION,
@@ -384,8 +385,11 @@ class ButtonGroup(ttk.Frame):
 class App(ttk.Window):
 
     def __init__(self):
-        super().__init__(title=f'{TITLE}   {VERSION}', themename=WINDOW_THEME)
+        super().__init__(title=f'{TITLE}   {VERSION}', themename=WINDOW_THEME, iconphoto=ICO_FILEPATH)
         self.debug = False
+        # photo = ttk.PhotoImage(file=ICO_FILEPATH)
+        # self.wm_iconphoto(True, photo)
+        # self.iconbitmap(default=ICO_FILEPATH)
 
     def create_widgets(self):
         self.order_group = OrderGroup(self, text=ORDER_GROUP_TITLE)

@@ -15,6 +15,7 @@ from .config import (
     SLAT_TITLE,
     TITLE,
     VERSION,
+    BLUEPRINTS,
     )
 from .utils import shorten_text
 
@@ -40,6 +41,8 @@ class PDF(FPDF):
         self.r_margin = 5.0
         self.t_margin = 5.0
         self.b_margin = 10.0
+        self.blueprint_w = self.epw / len(BLUEPRINTS)
+        self.blueprint_h = self.epw / len(BLUEPRINTS)
         self.set_auto_page_break(True, self.b_margin)
         self.set_text_color(*BLACK)
         self.set_draw_color(*BLACK)
@@ -209,16 +212,26 @@ class PDF(FPDF):
         # self.multi_cell(width, None, self.data['comments'], align='L')
         self.ln()
 
-    def create_page(self): # TODO: add blueprints
+    def render_blueprints(self):
+        x = self.l_margin
+        y = self.get_y()
+        w = self.blueprint_w
+        h = self.blueprint_h
+        for image in BLUEPRINTS:
+            self.image(image, w=w, h=h, x=x, y=y)
+            x = x + w
+
+    def create_page(self):
         self.add_page()
         self.set_font_size(FONT_MAIN_SIZE)
         self.set_y(FONT_MAIN_SIZE * 3)
+        self.render_blueprints()
+        self.set_y(FONT_MAIN_SIZE * 3 + self.blueprint_h)
         self.render_fences(self.epw / 2 + 10, 'LEFT')
         self.render_comments(self.epw / 2 +10, 'LEFT')
-        self.set_y(FONT_MAIN_SIZE * 3)
+        self.set_y(FONT_MAIN_SIZE * 3 + self.blueprint_h)
         self.render_lamels(self.epw / 2 - 20, 'RIGHT')
         self.render_caps(self.epw / 2 - 20, 'RIGHT')
         self.render_rails(self.epw / 2 - 20, 'RIGHT')
         self.render_slats(self.epw / 2 - 20, 'RIGHT')
         self.render_nails(self.epw / 2 - 20, 'RIGHT')
-

@@ -17,6 +17,12 @@ HOMEDIR = os.path.expanduser('~')
 LOG_FILEPATH = os.path.join(CWD, 'logging.log')
 ICO_FILEPATH = os.path.join(STATIC, 'ico', 'logo.ico')
 LOGO_FILEPATH = os.path.join(STATIC, 'logo', 'apollo_logo.png')
+BLUEPRINTS = [
+    os.path.join(STATIC, 'image', '1.jpg'),
+    os.path.join(STATIC, 'image', '2.jpg'),
+    os.path.join(STATIC, 'image', '3.jpg'),
+    os.path.join(STATIC, 'image', '4.jpg'),
+]
 
 # шрифт для PDF
 FONT_FILEPATH = os.path.join(STATIC, 'fonts', 'JetBrainsMono-Regular.ttf')
