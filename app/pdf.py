@@ -217,8 +217,8 @@ class PDF(FPDF):
         self.render_comments(self.epw / 2 +10, 'LEFT')
         self.set_y(FONT_MAIN_SIZE * 3)
         self.render_lamels(self.epw / 2 - 20, 'RIGHT')
-        self.render_rails(self.epw / 2 - 20, 'RIGHT')
         self.render_caps(self.epw / 2 - 20, 'RIGHT')
+        self.render_rails(self.epw / 2 - 20, 'RIGHT')
         self.render_slats(self.epw / 2 - 20, 'RIGHT')
         self.render_nails(self.epw / 2 - 20, 'RIGHT')
 
