@@ -80,7 +80,7 @@ class PDF(FPDF):
         self.cell(HEADER_LABEL_W, ROW_H, 
                   'Заказ:', border='RB', align='L')
         self.cell(self.epw / 2 - HEADER_LABEL_W, ROW_H,
-                  self.data['order_info']['order'], border='B', align='L')
+                  self.data['order_info']['order'].lstrip('0'), border='B', align='L')
         # print date row
         self.ln()
         self.cell(self.epw / 2, ROW_H) #blank
