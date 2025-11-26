@@ -338,7 +338,7 @@ class OrderGroup(ttk.Labelframe):
 
     def get_data(self):
         return {
-            'order': self.order_entry.get(),
+            'order': self.order_entry.get().lstrip('0'),
             'customer': self.customer_entry.get(),
             'engineer': self.engineer_entry.get(),
             'date': self.date_entry.entry.get(),
