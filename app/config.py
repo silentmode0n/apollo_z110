@@ -1,6 +1,6 @@
 import os
 
-VERSION = "v-1.3"
+VERSION = "v-1.4"
 
 TITLE = 'Жалюзи Z110'
 
@@ -48,7 +48,8 @@ WIDTH_MAX_VALUE = 3000
 COLOR_TYPES = ['шагрень', 'матовый', 'муар', 'глянец']
 HEIGHT_VALUES = [str(count * 110 + 30) for count in range(3, 28)]
 NAIL_SIZE = '4.0x6'
-
+SLATS_ONE_WITH = 1200
+SLATS_TWO_WITH = 2400
 # параметры виджетов
 TABLE_HEADERS = ("Ширина", "Высота", "RAL", "Структура", "Кол-во")
 

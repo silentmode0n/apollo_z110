@@ -8,6 +8,8 @@ from .config import (
     SLAT_TITLE,
     NAIL_TITLE,
     FENCE_TITLE,
+    SLATS_ONE_WITH,
+    SLATS_TWO_WITH,
     )
 
 
@@ -109,7 +111,7 @@ class Fence:
         self.color = color
         self.colortype = colortype
         self.lamel_num = height // 110
-        self.slat_num = 2 if self.width >= 2500 else 1 if self.width >= 2000 else 0
+        self.slat_num = 2 if self.width >= SLATS_TWO_WITH else 1 if self.width >= SLATS_ONE_WITH else 0
         self.nail_num = round((self.lamel_num * (2 + self.slat_num) + 2) * 1.1)
 
     def __repr__(self):
