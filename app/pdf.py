@@ -88,7 +88,7 @@ class PDF(FPDF):
         self.ln()
         self.cell(self.epw / 2, ROW_H) #blank
         self.cell(HEADER_LABEL_W, ROW_H, 
-                  'Дата:', border='RB', align='L')
+                  'Отгрузка:', border='RB', align='L')
         self.cell(self.epw / 2 - HEADER_LABEL_W, ROW_H,
                   self.data['order_info']['date'], border='B', align='L')
         self.ln()

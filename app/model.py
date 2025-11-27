@@ -127,7 +127,7 @@ class Fence:
         return (Cap(self.width, self.color, self.colortype), 1)
 
     def get_slats(self):
-        return (Slat(self.height - 40, self.color, self.colortype), self.slat_num)
+        return (Slat(self.height - 115, self.color, self.colortype), self.slat_num)
 
     def get_nails(self):
         return (Nail(self.color, self.colortype), self.nail_num)
