@@ -210,7 +210,8 @@ class ProductGroup(ttk.Labelframe):
         self.clear_data()
         if data:
             for product in data.get('products', ''):
-                self.add_row_to_table(product.split('_'))
+                values = list(map(lambda x: x.lower(), product.split('_')))
+                self.add_row_to_table(values)
 
     def set_data_form_json(self, data):
         self.clear_data()
