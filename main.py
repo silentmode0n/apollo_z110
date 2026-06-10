@@ -5,11 +5,11 @@ from icecream import ic
 # установка рабочего каталога
 os.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-from loguru import logger
-from app.gui_ttk import App
-from app.parser import parser
-from app.config import LOG_FILEPATH
-from app.debug import debug_condition
+from loguru import logger  # noqa: E402
+from app.gui_ttk import App  # noqa: E402
+from app.parser import parser  # noqa: E402
+from app.config import LOG_FILEPATH  # noqa: E402
+from app.debug import debug_condition  # noqa: E402
 
 logger.add(LOG_FILEPATH, format="{time} {level} {message}")
 

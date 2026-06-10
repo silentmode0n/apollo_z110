@@ -32,18 +32,20 @@ LOGO_SIZE = ROW_H * 2
 HEADER_LABEL_W = 24
 TABLE_HEADER_H = 7
 
+LEFT_MARGIN = 20
+TOP_MARGIN = RIGHT_MARGIN = 5
+BOTTOM_MARGIN = 10
+
 
 class PDF(FPDF):
     def __init__(self, data):
         super().__init__('P', 'mm', 'A4')
         self.data = data
-        self.l_margin = 20
-        self.r_margin = 5.0
-        self.t_margin = 5.0
-        self.b_margin = 10.0
+        self.set_margins(LEFT_MARGIN, TOP_MARGIN, RIGHT_MARGIN)
+        self.b_margin = BOTTOM_MARGIN
         self.blueprint_w = self.epw / len(BLUEPRINTS)
         self.blueprint_h = self.epw / len(BLUEPRINTS)
-        self.set_auto_page_break(True, self.b_margin)
+        self.set_auto_page_break(True, BOTTOM_MARGIN)
         self.set_text_color(*BLACK)
         self.set_draw_color(*BLACK)
         self.add_font(FONT_NAME, '', FONT_FILEPATH)
@@ -55,10 +57,12 @@ class PDF(FPDF):
         self.output(filepath)
 
     def header(self):
+        self.set_margins(LEFT_MARGIN, TOP_MARGIN, RIGHT_MARGIN)
         self.render_version_info()
         self.render_header_table()
 
     def footer(self):
+        self.set_margins(LEFT_MARGIN, TOP_MARGIN, RIGHT_MARGIN)
         self.render_main_frame()
 
     def render_main_frame(self):
